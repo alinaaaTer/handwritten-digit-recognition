@@ -18,6 +18,7 @@ def step_upload_file(context, relative_path):
     file_path = (PROJECT_ROOT / relative_path).resolve()
     assert file_path.exists(), f"File not found: {file_path}"
 
+    context.page.get_by_text("Upload image").wait_for(timeout=15000)
     context.page.locator('input[type="file"]').set_input_files(str(file_path))
 
 @then("I should see the uploaded image preview")

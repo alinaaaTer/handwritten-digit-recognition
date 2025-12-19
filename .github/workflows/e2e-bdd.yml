@@ -2,22 +2,20 @@ name: E2E BDD (Behave + Playwright)
 
 on:
   push:
-    branches: ["main"]
-  pull_request:
-    branches: ["main"]
+  workflow_dispatch:
 
 jobs:
   e2e:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Python
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.13"
+          python-version: "3.11"   # краще 3.11/3.12, бо TF часто проблемний на 3.13
 
       - name: Install dependencies
         run: |
@@ -26,36 +24,27 @@ jobs:
           pip install behave playwright
 
       - name: Install Playwright browsers
-        run: |
-          python -m playwright install --with-deps chromium
+        run: python -m playwright install --with-deps chromium
 
-      - name: Start Streamlit app (background)
-        run: |
-          nohup streamlit run app.py --server.headless true --server.port 8501 --server.address 127.0.0.1 > streamlit.log 2>&1 &
-          sleep 3
+      - name: Train model (create models/cnn_mnist.h5)
+        run: python train_cnn_mnist.py
 
-      - name: Wait until app is ready
+      - name: Start Streamlit
         run: |
-          python - << 'PY'
+          nohup streamlit run app.py --server.headless true --server.port 8501 --server.address 127.0.0.1 &
+          python - <<'PY'
           import time, urllib.request
-          url = "http://127.0.0.1:8501"
-          for _ in range(60):
+          url="http://127.0.0.1:8501"
+          for i in range(60):
               try:
                   urllib.request.urlopen(url, timeout=2)
-                  print("App is ready:", url)
-                  raise SystemExit(0)
+                  print("Streamlit is up")
+                  break
               except Exception:
                   time.sleep(1)
-          raise SystemExit("App did not start in time")
+          else:
+              raise SystemExit("Streamlit did not start")
           PY
 
-      - name: Run BDD tests (Behave)
-        run: |
-          behave -f pretty --no-capture
-
-      - name: Upload Streamlit log (artifact)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: streamlit-log
-          path: streamlit.log
+      - name: Run behave
+        run: behave -f pretty --no-capture
