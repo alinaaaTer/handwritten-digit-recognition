@@ -1,0 +1,20 @@
+# Virtual environment
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Models
+models/
+*.h5
+
+# Pytest
+.pytest_cache/
+
+# OS
+.DS_Store
+
+# Test data / images
+data/
+
