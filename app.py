@@ -20,8 +20,22 @@ except Exception:
 uploaded = st.file_uploader("Upload image (PNG/JPG, max 5 MB)", type=["png", "jpg", "jpeg"])
 invert = st.checkbox("Invert colors", value=True)
 
+MAX_MB = 5
+MAX_BYTES = MAX_MB * 1024 * 1024
+
 if uploaded:
+    if uploaded.size > MAX_BYTES:
+        st.error(f"File is too large. Max size is {MAX_MB} MB.")
+        st.stop()
+
     raw_bytes = uploaded.read()
+
+    try:
+        validate_uploaded_file(uploaded.name, raw_bytes)
+    except ValueError as e:
+        st.error(str(e))
+        st.stop()
+
 
     try:
         validate_uploaded_file(uploaded.name, raw_bytes)
