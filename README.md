@@ -23,3 +23,12 @@ Python
 TensorFlow / PyTorch (depending on implementation)
 NumPy
 OpenCV / PIL
+
+## Code Documentation
+
+All functions must include docstrings.
+
+Each docstring should contain:
+- description
+- parameters
+- return values
