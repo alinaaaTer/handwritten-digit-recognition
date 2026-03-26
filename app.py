@@ -17,7 +17,10 @@ except Exception:
     st.error("Model not found. First run: python train_cnn_mnist.py")
     st.stop()
 
-uploaded = st.file_uploader("Upload image (PNG/JPG, max 5 MB)", type=["png", "jpg", "jpeg"])
+uploaded = st.file_uploader(
+    "Upload image (PNG/JPG, max 5 MB)",
+    type=["png", "jpg", "jpeg"]
+)
 invert = st.checkbox("Invert colors", value=True)
 
 if uploaded:

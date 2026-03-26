@@ -3,6 +3,7 @@ import tensorflow as tf
 
 MODEL_PATH = Path("models/cnn_mnist.h5")
 
+
 def build_model():
     model = tf.keras.Sequential([
         tf.keras.layers.Input(shape=(28, 28, 1)),
@@ -20,11 +21,11 @@ def build_model():
                   metrics=["accuracy"])
     return model
 
+
 def main():
     (x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
-
     x_train = (x_train / 255.0).astype("float32")[..., None]
-    x_test  = (x_test / 255.0).astype("float32")[..., None]
+    x_test = (x_test / 255.0).astype("float32")[..., None]
 
     model = build_model()
 
@@ -49,6 +50,7 @@ def main():
     MODEL_PATH.parent.mkdir(parents=True, exist_ok=True)
     model.save(MODEL_PATH)
     print(f"Saved model to: {MODEL_PATH}")
+
 
 if __name__ == "__main__":
     main()

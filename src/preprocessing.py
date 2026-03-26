@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 
+
 def preprocess_to_mnist(image_bgr: np.ndarray, invert: bool = True) -> np.ndarray:
     """
     Returns: np.ndarray shape (28, 28, 1) float32 in [0..1]
