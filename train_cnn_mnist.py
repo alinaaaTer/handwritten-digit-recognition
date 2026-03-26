@@ -5,6 +5,15 @@ MODEL_PATH = Path("models/cnn_mnist.h5")
 
 
 def build_model():
+    """
+    Build and compile a Convolutional Neural Network (CNN) for MNIST digit classification.
+
+    The model consists of convolutional, pooling, and fully connected layers.
+    It is compiled using the Adam optimizer and sparse categorical crossentropy loss.
+
+    Returns:
+        tf.keras.Model: Compiled CNN model ready for training.
+    """
     model = tf.keras.Sequential([
         tf.keras.layers.Input(shape=(28, 28, 1)),
         tf.keras.layers.Conv2D(32, 3, activation="relu"),
@@ -23,6 +32,19 @@ def build_model():
 
 
 def main():
+    """
+    Train a CNN model on the MNIST dataset and save it to disk.
+
+    Workflow:
+    - Load MNIST dataset
+    - Normalize and reshape input data
+    - Train the model with validation split
+    - Evaluate model performance on test data
+    - Save trained model to file
+
+    Returns:
+        None
+    """
     (x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
     x_train = (x_train / 255.0).astype("float32")[..., None]
     x_test = (x_test / 255.0).astype("float32")[..., None]

@@ -7,48 +7,69 @@ from src.preprocessing import preprocess_to_mnist
 from src.inference import predict_top3, load_model
 from src.io_validators import validate_uploaded_file
 
-st.set_page_config(page_title="Handwritten Digit Recognition", layout="centered")
-st.title("Handwritten Digit Recognition (CNN, MNIST)")
+def run_app():
+    """
+    Run the Streamlit application for handwritten digit recognition.
 
-# Перевірка, що модель існує/завантажується
-try:
-    load_model()
-except Exception:
-    st.error("Model not found. First run: python train_cnn_mnist.py")
-    st.stop()
+    Functionality:
+    - Upload image file (PNG/JPG)
+    - Validate uploaded file
+    - Preprocess image into MNIST format (28x28 grayscale)
+    - Perform prediction using trained CNN model
+    - Display prediction, confidence score, and top-3 results
 
-uploaded = st.file_uploader(
-    "Upload image (PNG/JPG, max 5 MB)",
-    type=["png", "jpg", "jpeg"]
-)
-invert = st.checkbox("Invert colors", value=True)
+    Returns:
+        None
+    """
 
-if uploaded:
-    raw_bytes = uploaded.read()
+    st.set_page_config(page_title="Handwritten Digit Recognition", layout="centered")
+    st.title("Handwritten Digit Recognition (CNN, MNIST)")
 
+    # Check if model is available
     try:
-        validate_uploaded_file(uploaded.name, raw_bytes)
-    except ValueError as e:
-        st.error(str(e))
+        load_model()
+    except Exception:
+        st.error("Model not found. First run: python train_cnn_mnist.py")
         st.stop()
 
-    file_bytes = np.asarray(bytearray(raw_bytes), dtype=np.uint8)
-    img_bgr = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+    uploaded = st.file_uploader(
+        "Upload image (PNG/JPG, max 5 MB)",
+        type=["png", "jpg", "jpeg"]
+    )
 
-    if img_bgr is None:
-        st.error("Cannot decode image. Upload a valid PNG/JPG.")
-        st.stop()
+    invert = st.checkbox("Invert colors", value=True)
 
-    x = preprocess_to_mnist(img_bgr, invert=invert)
+    if uploaded:
+        raw_bytes = uploaded.read()
 
-    st.subheader("Preprocessed (28×28)")
-    st.image(x.squeeze(), clamp=True)
+        try:
+            validate_uploaded_file(uploaded.name, raw_bytes)
+        except ValueError as e:
+            st.error(str(e))
+            st.stop()
 
-    pred, conf, top3 = predict_top3(x)
+        file_bytes = np.asarray(bytearray(raw_bytes), dtype=np.uint8)
+        img_bgr = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
 
-    st.subheader("Result")
-    st.write(f"**Predicted digit:** {pred}")
-    st.write(f"**Confidence:** {conf:.3f}")
-    st.write("**Top-3:**")
-    for d, p in top3:
-        st.write(f"- {d}: {p:.3f}")
+        if img_bgr is None:
+            st.error("Cannot decode image. Upload a valid PNG/JPG.")
+            st.stop()
+
+        x = preprocess_to_mnist(img_bgr, invert=invert)
+
+        st.subheader("Preprocessed (28×28)")
+        st.image(x.squeeze(), clamp=True)
+
+        pred, conf, top3 = predict_top3(x)
+
+        st.subheader("Result")
+        st.write(f"**Predicted digit:** {pred}")
+        st.write(f"**Confidence:** {conf:.3f}")
+        st.write("**Top-3:**")
+
+        for d, p in top3:
+            st.write(f"- {d}: {p:.3f}")
+
+
+if __name__ == "__main__":
+    run_app()
