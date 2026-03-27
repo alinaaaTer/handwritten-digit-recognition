@@ -1,18 +1,26 @@
 import logging
+from logging.handlers import RotatingFileHandler
 import os
 
 def setup_logger():
     level = os.getenv("LOG_LEVEL", "INFO")
 
-    logging.basicConfig(
-        level=getattr(logging, level),
-        format="%(asctime)s [%(levelname)s] %(name)s: %(message)s"
+    logger = logging.getLogger("app")
+    logger.setLevel(getattr(logging, level))
+
+    formatter = logging.Formatter(
+        "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
     )
-    return logging.getLogger("app")
 
-import uuid
+    # console
+    ch = logging.StreamHandler()
+    ch.setFormatter(formatter)
 
-def log_error(message, context=None):
-    error_id = str(uuid.uuid4())
-    logging.error(f"[{error_id}] {message} | context={context}")
-    return error_id
+    # file
+    fh = RotatingFileHandler("app.log", maxBytes=1000000, backupCount=3)
+    fh.setFormatter(formatter)
+
+    logger.addHandler(ch)
+    logger.addHandler(fh)
+
+    return logger
