@@ -32,3 +32,40 @@ Each docstring should contain:
 - description
 - parameters
 - return values
+
+## Getting Started
+
+### 1. Clone repository
+
+git clone https://github.com/alinaaaTer/handwritten-digit-recognition
+cd handwritten-digit-recognition
+
+### 2. Install Python
+
+Install Python 3.10+
+
+### 3. Create virtual environment
+
+python -m venv .venv
+
+### 4. Activate environment
+
+Windows:
+.venv\Scripts\activate
+
+### 5. Install dependencies
+
+pip install -r requirements.txt
+
+### 6. Train model
+
+python train_cnn_mnist.py
+
+### 7. Run application
+
+streamlit run app.py
+
+### 8. Open in browser
+
+http://127.0.0.1:5500/
+
