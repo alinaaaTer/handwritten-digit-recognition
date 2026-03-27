@@ -6,6 +6,10 @@ import numpy as np
 from src.preprocessing import preprocess_to_mnist
 from src.inference import predict_top3, load_model
 from src.io_validators import validate_uploaded_file
+from src.logger import setup_logger
+logger = setup_logger()
+
+logger.info("Application started")
 
 def run_app():
     """
@@ -28,7 +32,9 @@ def run_app():
     # Check if model is available
     try:
         load_model()
+        logger.info("Model loaded successfully")
     except Exception:
+        logger.info("Model loaded successfully")
         st.error("Model not found. First run: python train_cnn_mnist.py")
         st.stop()
 
@@ -40,11 +46,13 @@ def run_app():
     invert = st.checkbox("Invert colors", value=True)
 
     if uploaded:
+        logger.info(f"File uploaded: {uploaded.name}") 
         raw_bytes = uploaded.read()
 
         try:
             validate_uploaded_file(uploaded.name, raw_bytes)
         except ValueError as e:
+            logger.warning(f"Validation error: {e}") 
             st.error(str(e))
             st.stop()
 
@@ -52,6 +60,8 @@ def run_app():
         img_bgr = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
 
         if img_bgr is None:
+            logger.error("Image decoding failed")
+            st.error("Cannot decode image. Upload a valid PNG/JPG.")
             st.error("Cannot decode image. Upload a valid PNG/JPG.")
             st.stop()
 
@@ -61,6 +71,7 @@ def run_app():
         st.image(x.squeeze(), clamp=True)
 
         pred, conf, top3 = predict_top3(x)
+        logger.error("Image decoding failed") 
 
         st.subheader("Result")
         st.write(f"**Predicted digit:** {pred}")
