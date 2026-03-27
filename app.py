@@ -34,7 +34,54 @@ def run_app():
         load_model()
         logger.info("Model loaded successfully")
     except Exception:
+        logger.error("Model loading failed")
+        st.error("Model not found. First run: python train_cnn_mnist.py")
+        st.stop()
+
+    uploaded = st.file_uploader(
+        "Upload image (PNG/JPG, max 5 MB)",
+        type=["png", "jpg", "jpeg"]
+    )
+
+    invert = st.checkbox("Invert colors", value=True)
+
+    # app.py
+import streamlit as st
+import cv2
+import numpy as np
+
+from src.preprocessing import preprocess_to_mnist
+from src.inference import predict_top3, load_model
+from src.io_validators import validate_uploaded_file
+from src.logger import setup_logger
+logger = setup_logger()
+
+logger.info("Application started")
+
+def run_app():
+    """
+    Run the Streamlit application for handwritten digit recognition.
+
+    Functionality:
+    - Upload image file (PNG/JPG)
+    - Validate uploaded file
+    - Preprocess image into MNIST format (28x28 grayscale)
+    - Perform prediction using trained CNN model
+    - Display prediction, confidence score, and top-3 results
+
+    Returns:
+        None
+    """
+
+    st.set_page_config(page_title="Handwritten Digit Recognition", layout="centered")
+    st.title("Handwritten Digit Recognition (CNN, MNIST)")
+
+    # Check if model is available
+    try:
+        load_model()
         logger.info("Model loaded successfully")
+    except Exception:
+        logger.error("Model loading failed")
         st.error("Model not found. First run: python train_cnn_mnist.py")
         st.stop()
 
@@ -46,40 +93,45 @@ def run_app():
     invert = st.checkbox("Invert colors", value=True)
 
     if uploaded:
-        logger.info(f"File uploaded: {uploaded.name}") 
-        raw_bytes = uploaded.read()
+      logger.info(f"File uploaded: {uploaded.name}")
 
-        try:
-            validate_uploaded_file(uploaded.name, raw_bytes)
-        except ValueError as e:
-            logger.warning(f"Validation error: {e}") 
-            st.error(str(e))
-            st.stop()
+      try:
+          raw_bytes = uploaded.read()
 
-        file_bytes = np.asarray(bytearray(raw_bytes), dtype=np.uint8)
-        img_bgr = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+          validate_uploaded_file(uploaded.name, raw_bytes)
 
-        if img_bgr is None:
-            logger.error("Image decoding failed")
-            st.error("Cannot decode image. Upload a valid PNG/JPG.")
-            st.error("Cannot decode image. Upload a valid PNG/JPG.")
-            st.stop()
+          file_bytes = np.asarray(bytearray(raw_bytes), dtype=np.uint8)
+          img_bgr = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
 
-        x = preprocess_to_mnist(img_bgr, invert=invert)
+          if img_bgr is None:
+              raise ValueError("Image decoding failed")
 
-        st.subheader("Preprocessed (28×28)")
-        st.image(x.squeeze(), clamp=True)
+          x = preprocess_to_mnist(img_bgr, invert=invert)
 
-        pred, conf, top3 = predict_top3(x)
-        logger.error("Image decoding failed") 
+          st.subheader("Preprocessed (28×28)")
+          st.image(x.squeeze(), clamp=True)
 
-        st.subheader("Result")
-        st.write(f"**Predicted digit:** {pred}")
-        st.write(f"**Confidence:** {conf:.3f}")
-        st.write("**Top-3:**")
+          pred, conf, top3 = predict_top3(x)
 
-        for d, p in top3:
-            st.write(f"- {d}: {p:.3f}")
+          logger.info(f"Prediction: {pred}, confidence: {conf}")
+
+          st.subheader("Result")
+          st.write(f"**Predicted digit:** {pred}")
+          st.write(f"**Confidence:** {conf:.3f}")
+          st.write("**Top-3:**")
+
+          for d, p in top3:
+              st.write(f"- {d}: {p:.3f}")
+
+      except Exception as e:
+          from src.logger import log_error   # 👈 додай
+
+          error_id = log_error(
+              "File processing error",
+              {"file": uploaded.name, "error": str(e)}
+          )
+
+          st.error(f"Error occurred. ID: {error_id}")
 
 
 if __name__ == "__main__":
