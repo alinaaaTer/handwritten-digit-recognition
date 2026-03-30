@@ -1,0 +1,33 @@
+2026-03-30 06:30:22,764 [INFO] app: Application started
+2026-03-30 06:30:22,766 [INFO] app: Application started
+2026-03-30 06:30:22,766 [INFO] app: Application started
+2026-03-30 06:30:24,263 [INFO] app: Model loaded successfully
+2026-03-30 06:30:24,263 [INFO] app: Model loaded successfully
+2026-03-30 06:31:20,932 [INFO] app: Application started
+2026-03-30 06:31:20,932 [INFO] app: Application started
+2026-03-30 06:31:20,932 [INFO] app: Application started
+2026-03-30 06:31:20,936 [INFO] app: Application started
+2026-03-30 06:31:20,936 [INFO] app: Application started
+2026-03-30 06:31:20,936 [INFO] app: Application started
+2026-03-30 06:31:20,936 [INFO] app: Application started
+2026-03-30 06:31:20,943 [INFO] app: Model loaded successfully
+2026-03-30 06:31:20,943 [INFO] app: Model loaded successfully
+2026-03-30 06:31:20,943 [INFO] app: Model loaded successfully
+2026-03-30 06:31:20,943 [INFO] app: Model loaded successfully
+2026-03-30 06:31:20,988 [INFO] app: File uploaded: photo_1.jpg
+2026-03-30 06:31:20,988 [INFO] app: File uploaded: photo_1.jpg
+2026-03-30 06:31:20,988 [INFO] app: File uploaded: photo_1.jpg
+2026-03-30 06:31:20,988 [INFO] app: File uploaded: photo_1.jpg
+2026-03-30 06:31:22,125 [INFO] app: Prediction: 6, confidence: 0.16113777458667755
+2026-03-30 06:31:22,125 [INFO] app: Prediction: 6, confidence: 0.16113777458667755
+2026-03-30 06:31:22,125 [INFO] app: Prediction: 6, confidence: 0.16113777458667755
+2026-03-30 06:31:22,125 [INFO] app: Prediction: 6, confidence: 0.16113777458667755
+2026-03-30 06:44:27,094 [INFO] app: Application started
+2026-03-30 06:44:27,094 [INFO] app: Application started
+2026-03-30 06:44:28,280 [INFO] app: Model loaded successfully
+2026-03-30 06:44:42,961 [INFO] app: Application started
+2026-03-30 06:44:42,963 [INFO] app: Application started
+2026-03-30 06:44:42,967 [INFO] app: Model loaded successfully
+2026-03-30 06:44:42,975 [INFO] app: File uploaded: photo_6.jpg
+2026-03-30 06:44:43,802 [INFO] app: Prediction: 6, confidence: 0.18215124309062958
+2026-03-30 06:44:43,802 [INFO] app: Processing time: 0.8242 seconds

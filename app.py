@@ -2,6 +2,7 @@
 import streamlit as st
 import cv2
 import numpy as np
+import time
 
 from src.preprocessing import preprocess_to_mnist
 from src.inference import predict_top3, load_model
@@ -95,6 +96,8 @@ def run_app():
     if uploaded:
       logger.info(f"File uploaded: {uploaded.name}")
 
+      start = time.time()
+
       try:
           raw_bytes = uploaded.read()
 
@@ -114,6 +117,9 @@ def run_app():
           pred, conf, top3 = predict_top3(x)
 
           logger.info(f"Prediction: {pred}, confidence: {conf}")
+
+          end = time.time()
+          logger.info(f"Processing time: {end - start:.4f} seconds")
 
           st.subheader("Result")
           st.write(f"**Predicted digit:** {pred}")

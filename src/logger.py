@@ -3,9 +3,12 @@ from logging.handlers import RotatingFileHandler
 import os
 
 def setup_logger():
-    level = os.getenv("LOG_LEVEL", "INFO")
-
     logger = logging.getLogger("app")
+
+    if logger.hasHandlers():
+        return logger
+
+    level = os.getenv("LOG_LEVEL", "INFO")
     logger.setLevel(getattr(logging, level))
 
     formatter = logging.Formatter(
